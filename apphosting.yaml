@@ -1,0 +1,54 @@
+# OpenMAIC Microservice for Atlas LMS
+# Deployed as separate service to maintain AGPL license isolation
+
+# Firebase project for deployment
+project: atlaslms-f7cdc
+
+runConfig:
+  concurrency: 80
+  cpu: 2
+  memoryMiB: 2048
+  port: 3000
+  maxInstances: 50
+  minInstances: 2  # Keep warm for low latency
+  
+env:
+  # Firebase Auth (must match Atlas LMS project)
+  - variable: FIREBASE_PROJECT_ID
+    value: atlaslms-f7cdc
+  - variable: FIREBASE_CLIENT_EMAIL
+    secret: firebase-client-email
+  - variable: FIREBASE_PRIVATE_KEY
+    secret: firebase-private-key
+    
+  # Atlas LMS Integration
+  - variable: ATLAS_LMS_BASE_URL
+    value: https://atlaslms--atlaslms-f7cdc.us-east4.hosted.app
+  - variable: ATLAS_LMS_API_KEY
+    secret: atlas-lms-api-key
+    
+  # LLM Providers (prioritize Gemini for cost/performance)
+  - variable: GOOGLE_API_KEY
+    secret: google-api-key
+  - variable: GOOGLE_MODELS
+    value: gemini-2.5-flash,gemini-2.5-pro
+    
+  # Optional: OpenAI fallback
+  - variable: OPENAI_API_KEY
+    secret: openai-api-key
+    
+  # Storage (Firebase Storage for generated assets)
+  - variable: FIREBASE_STORAGE_BUCKET
+    value: atlaslms-f7cdc.firebasestorage.app
+    
+  # Security
+  - variable: OPENMAIC_JWT_SECRET
+    secret: openmaic-jwt-secret
+  - variable: CORS_ORIGIN
+    value: https://atlaslms--atlaslms-f7cdc.us-east4.hosted.app
+    
+  # Logging
+  - variable: LOG_LEVEL
+    value: info
+  - variable: LOG_FORMAT
+    value: pretty
