@@ -12,17 +12,23 @@ import { NextRequest, NextResponse } from 'next/server';
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 
-// Initialize Firebase Admin (only once)
-const firebaseAdminConfig = {
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-};
+// Lazy initialization - only runs when functions are actually called
+let authInstance: ReturnType<typeof getAuth> | null = null;
 
-if (getApps().length === 0) {
-  initializeApp({
-    credential: cert(firebaseAdminConfig),
-  });
+function getFirebaseAuth() {
+  if (authInstance) return authInstance;
+  
+  if (getApps().length === 0) {
+    const firebaseAdminConfig = {
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    };
+    initializeApp({ credential: cert(firebaseAdminConfig) });
+  }
+  
+  authInstance = getAuth();
+  return authInstance;
 }
 
 export interface AtlasUserContext {
@@ -50,7 +56,7 @@ export async function verifyAtlasAuth(request: NextRequest): Promise<AtlasUserCo
   const token = authHeader.substring(7);
 
   try {
-    const decoded = await getAuth().verifyIdToken(token);
+    const decoded = await getFirebaseAuth().verifyIdToken(token);
     
     // Extract Atlas-specific claims
     const role = (decoded.role as AtlasUserContext['role']) || 'learner';
