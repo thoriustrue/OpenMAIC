@@ -12,6 +12,8 @@ import { z } from 'zod';
 import { verifyAtlasAuth, type AtlasUserContext } from '@/lib/server/atlas-auth';
 import { createLogger } from '@/lib/logger';
 
+export const dynamic = 'force-dynamic';
+
 const log = createLogger('AtlasChat');
 
 const ChatRequestSchema = z.object({

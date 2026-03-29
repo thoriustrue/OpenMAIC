@@ -12,6 +12,8 @@ import { z } from 'zod';
 import { withAtlasAuth, generateOpenMAICSession, type AtlasUserContext } from '@/lib/server/atlas-auth';
 import { nanoid } from 'nanoid';
 
+export const dynamic = 'force-dynamic';
+
 const CreateSessionSchema = z.object({
   classroomId: z.string().optional(),
   topic: z.string().min(1).max(500),

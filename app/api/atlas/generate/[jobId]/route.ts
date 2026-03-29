@@ -10,6 +10,8 @@ import { type NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { withAtlasAuth } from '@/lib/server/atlas-auth';
 
+export const dynamic = 'force-dynamic';
+
 // Reference to the job store from the main route
 // In production, use a shared database
 interface JobStatus {
