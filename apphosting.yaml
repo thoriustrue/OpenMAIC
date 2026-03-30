@@ -27,15 +27,11 @@ env:
   - variable: ATLAS_LMS_API_KEY
     secret: atlas-lms-api-key
     
-  # LLM Providers (prioritize Gemini for cost/performance)
+  # LLM Providers (Gemini only - OpenAI removed)
   - variable: GOOGLE_API_KEY
     secret: google-api-key
   - variable: GOOGLE_MODELS
     value: gemini-2.5-flash,gemini-2.5-pro
-    
-  # Optional: OpenAI fallback
-  - variable: OPENAI_API_KEY
-    secret: openai-api-key
     
   # Storage (Firebase Storage for generated assets)
   - variable: FIREBASE_STORAGE_BUCKET
